@@ -27,8 +27,8 @@ class SourceManager:
             # ⚠️ SCRAPING tools - Use as secondary sources
             BingCrawler(),  # ✅ Fixed to handle local files
             Crawl4AIScraper(),  # Additional web scraper
-            WikimediaAPI(),
-            RawpixelScraper(),  # Not reliable
+            #WikimediaAPI(),
+            #RawpixelScraper(),  # Not reliable
             PlaywrightScraper(),
             SimpleScraper(),
 
@@ -37,6 +37,8 @@ class SourceManager:
             #EuropeanaAPI(),  # Invalid API key
 
             # 🔥 Fallback archive
+            
+            
             SmithsonianAPI(),
         ]
 

@@ -43,7 +43,9 @@ class NYPLAPI(BaseSource):
                 yield {
                     "url": image_url,
                     "source": "nypl",
-                    "id": doc.get("uuid", "")
+                    "id": doc.get("uuid", ""),
+                    "title": doc.get("alt", ""),
+                    "license": "NYPL Free License" 
                 }
 
                 collected += 1

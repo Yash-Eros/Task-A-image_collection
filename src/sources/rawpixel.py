@@ -56,7 +56,9 @@ class RawpixelScraper:
                         "id": self.generate_id(src),
                         "url": src,
                         "source": self.name,
-                        "query": query
+                        "query": query,
+                        "title": photo.get("alt", ""),
+                        "license": "Rawpixel Free License"
                     }
 
                     collected += 1

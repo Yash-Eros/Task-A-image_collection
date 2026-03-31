@@ -67,8 +67,9 @@ class ImageScraper:
         self.base_dir = "data/indian_cultural_sorted"
         os.makedirs(self.base_dir, exist_ok=True)
 
-        os.makedirs("data/rejected/watermarked", exist_ok=True)
-        os.makedirs("data/rejected/blurry", exist_ok=True)
+        # ✅ Create bucket-specific rejected folders
+        os.makedirs(os.path.join("data", "rejected", self.bucket, "watermarked"), exist_ok=True)
+        os.makedirs(os.path.join("data", "rejected", self.bucket, "blurry"), exist_ok=True)
 
         self.watermark = WatermarkValidator()
         self.resolution = ResolutionSorter(self.base_dir)
@@ -317,14 +318,14 @@ class ImageScraper:
                     is_marked, score = self.watermark.is_watermarked(path)
                     print(f"🔎 Watermark check: marked={is_marked}, score={score}")
 
-                    if is_marked and score > 0.7:
+                    if is_marked:
                         print(f"❌ Rejected: watermarked (score={score})")
-                        safe_move(path, "data/rejected/watermarked")
+                        safe_move(path, os.path.join("data", "rejected", self.bucket, "watermarked"))
                         return
 
                     if is_blurry(path):
                         print("❌ Rejected: blurry")
-                        safe_move(path, "data/rejected/blurry")
+                        safe_move(path, os.path.join("data", "rejected", self.bucket, "blurry"))
                         return
 
                     print(f"✓ Image passed all checks. Moving to bucket...")

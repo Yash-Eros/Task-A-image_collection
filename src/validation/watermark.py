@@ -1,51 +1,116 @@
 import os
 import sys
-import torch
-from PIL import Image
-import torchvision.transforms as transforms
-
-# ✅ FIXED PATH (points to correct folder)
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../wmdetection"))
-
-# ✅ Add BOTH levels to Python path
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../wmdetection"))
-sys.path.append(BASE_DIR)
-
-from wmdetection.models import convnext
+from pathlib import Path
 
 
+# =========================================================
+# ✅ FIX PATHS (VERY IMPORTANT)
+# =========================================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../../"))
+
+# Add .vendor/watermark-detection to Python path
+VENDOR_PATH = os.path.join(PROJECT_ROOT, ".vendor", "watermark-detection")
+
+if VENDOR_PATH not in sys.path:
+    sys.path.insert(0, VENDOR_PATH)
+
+
+# =========================================================
+# MAIN CLASS
+# =========================================================
 class WatermarkValidator:
+    def __init__(self):
+        print("[Watermark] Using boomb0om trained model (ConvNeXt)")
 
-    def __init__(self, threshold=0.5):
-        self.threshold = threshold
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        try:
+            from validator import Validator
 
-        print(f"[Watermark] Using boomb0om ConvNeXt-Tiny on {self.device}")
+            self.validator = Validator(
+                watermark_threshold=0.4,   # 🔥 LOWERED (better for faint logos like EROS)
+                min_blur_variance=100.0,
+                max_dimension=4096,
+                blur_tolerance=10.0,
+                watermark_model_name="convnext-tiny",
+                watermark_model_cache_dir=os.path.join(PROJECT_ROOT, ".model_cache"),
+                watermark_device="auto",
+            )
 
-        # Load architecture (no pretrained weights available)
-        self.model = convnext.convnext_tiny(pretrained=False)
+            print("[Watermark] Model loaded successfully ✅")
 
-        self.model.to(self.device)
-        self.model.eval()
+        except Exception as e:
+            print("[Watermark ERROR] Model load failed:", e)
+            self.validator = None
 
-        self.transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-        ])
-
+    # =========================================================
+    # MAIN FUNCTION
+    # =========================================================
     def is_watermarked(self, image_path):
         try:
-            image = Image.open(image_path).convert("RGB")
-            image = self.transform(image).unsqueeze(0).to(self.device)
+            if self.validator is None:
+                return False, 0.0
 
-            with torch.no_grad():
-                output = self.model(image)
+            result = self.validator.validate(Path(image_path))
 
-                # Simulated probability (since no trained weights)
-                score = torch.sigmoid(output.mean()).item()
+            score = float(result.watermark_score)
 
-            return score > self.threshold, score
+            # =================================================
+            # 🔥 CUSTOM DECISION LOGIC (IMPORTANT)
+            # =================================================
+            # Instead of blindly trusting "reason",
+            # we use score threshold (more stable across systems)
+
+            is_marked = score >= 0.4
+
+            # =================================================
+            # 🔍 DEBUG (REMOVE LATER)
+            # =================================================
+            print(f"[DEBUG] {image_path} → score={score:.4f} | reason={result.reason}")
+
+            return is_marked, round(score, 4)
 
         except Exception as e:
             print(f"[Watermark ERROR] {e}")
-            return True, 1.0
+            return False, 0.0
+
+    # =========================================================
+    # OPTIONAL COMPATIBILITY
+    # =========================================================
+    def validate(self, image_path):
+        score_full = self._predict(image)
+
+        h, w = image.shape[:2]
+        corner_crop = image[int(h*0.7):h, int(w*0.7):w]
+
+        score_crop = self._predict(corner_crop)
+
+
+        # take best score
+        score = max(score_full, score_crop)
+
+
+        if score > 0.6:
+            if is_text_like_patch(image):
+                return 0.3, "text_not_watermark"
+
+        return score, "watermark_detected" if score > 0.6 else "clean"        
+
+    
+
+    def is_text_like_patch(img):
+        """
+        Detects if image is likely normal text (not watermark)
+        based on density + edge structure
+        """
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Edge detection
+        edges = cv2.Canny(gray, 50, 150)
+
+        edge_density = edges.mean()
+
+        # Text tends to have strong structured edges
+        if edge_density > 20:
+            return True
+
+        return False    

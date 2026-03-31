@@ -26,48 +26,56 @@
 * URL: https://commons.wikimedia.org/
 * License: Various (filtered for open use)
 * Access: API / scraping
+* Rate Limit: ~200 requests/sec (API), polite usage recommended
 
 ## 5. Europeana
 
 * URL: https://api.europeana.eu/
 * License: CC0 / Public Domain
 * Access: API
+* Rate Limits: ~10 requests/sec
 
 ## 6. NYPL Digital Collections
 
 * URL: https://api.repo.nypl.org/
 * License: Public Domain
 * Access: API
+* Rate Limits: ~5–10 requests/sec
 
 ## 7. Smithsonian Open Access
 
 * URL: https://www.si.edu/openaccess
 * License: CC0
 * Access: API
+* Rate Limits: ~10 requests/sec recommended
 
 ## 8. Flickr (Creative Commons)
 
 * URL: https://www.flickr.com/services/api/
 * License: CC filtered
 * Access: API
+* Rate Limits: ~3600 requests/hour
 
 ## 9. Rawpixel (Public Domain)
 
 * URL: https://www.rawpixel.com/
 * License: Public Domain
 * Access: Scraping
+* Rate Limits: Not publicly specified; assumed low (scraping should be throttled ~1 req/sec)
 
 ## 10. Internet Archive
 
 * URL: https://archive.org/
 * License: Mixed (filtered)
 * Access: Scraping
+* Rate Limits: ~10–20 requests/sec
 
 ## 11. Bing Image Search (via icrawler)
 
 * URL: https://www.bing.com/images
 * License: Filtered for reuse
 * Access: Scraping
+* Rate Limits: ~3 requests/sec
 
 ## Notes
 

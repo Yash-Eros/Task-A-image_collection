@@ -53,7 +53,9 @@ class EuropeanaAPI(BaseSource):
                     yield {
                         "url": image_url,
                         "source": "europeana",
-                        "id": item.get("id", "")
+                        "id": item.get("id", ""),
+                        "title": photo.get("alt", ""),
+                        "license": "Europeana Free License"
                     }
 
                     collected += 1

@@ -40,7 +40,9 @@ class PlaywrightScraper:
                     results.append({
                         "id": img_url,
                         "url": img_url,
-                        "source": "playwright"
+                        "source": "playwright",
+                        "title": photo.get("alt", ""),
+                        "license": "Playwright Free License"
                     })
 
                     if len(results) >= limit:

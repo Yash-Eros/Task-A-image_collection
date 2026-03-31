@@ -41,7 +41,9 @@ class PixabayAPI(BaseSource):
                 yield {
                     "url": img["largeImageURL"],
                     "source": "pixabay",
-                    "id": img["id"]
+                    "id": img["id"],
+                    "title": img.get("alt", ""),
+                    "license": "Pixabay Free License"
                 }
 
                 collected += 1

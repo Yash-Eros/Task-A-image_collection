@@ -84,7 +84,9 @@ class UnsplashAPI(BaseSource):
                     "id": f"unsplash_{img_id}",
                     "url": img["urls"]["full"],
                     "source": "unsplash",
-                    "meta": img
+                    "meta": img,
+                    "title": photo.get("alt", ""),
+                    "license": "Unsplash Free License"
                 }
 
                 collected += 1

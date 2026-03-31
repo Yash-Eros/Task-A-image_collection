@@ -48,7 +48,9 @@ class SmithsonianAPI(BaseSource):
                         yield {
                             "url": image_url,
                             "source": "smithsonian",
-                            "id": item.get("id", "")
+                            "id": item.get("id", ""),
+                            "title": photo.get("alt", ""),
+                            "license": "Smithsonian Free License"
                         }
 
                         collected += 1

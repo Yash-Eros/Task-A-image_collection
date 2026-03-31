@@ -129,7 +129,10 @@ dmypy.json
 .pyre/
 
 # Project specific
-data/
+data/eros_frames/
+data/indian_cultural_sorted/
+data/rejected/
+data/temp/
 logs/
 temp/
 checkpoint/
@@ -139,5 +142,9 @@ src/__pycache__/
 test/
 scrape_output.txt
 test_bing_downloader.py
+test_images/
+
 
 wmdetection/
+.model_cache/
+.vendor/

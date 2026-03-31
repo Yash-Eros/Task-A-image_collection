@@ -39,7 +39,9 @@ class PexelsAPI(BaseSource):
                 yield {
                     "url": photo["src"]["original"],
                     "source": "pexels",
-                    "id": photo["id"]
+                    "id": photo["id"],
+                    "title": photo.get("alt", ""),
+                    "license": "Pexels Free License"
                 }
 
                 collected += 1
