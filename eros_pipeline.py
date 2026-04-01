@@ -19,7 +19,7 @@ from PIL import Image, ImageDraw
 
 
 # ✅ YOUR WATERMARK REGION
-WM_REGION = (44, 109, 89, 27)  # (x, y, w, h)
+WM_REGION = (76, 112, 86, 22)  # (x, y, w, h)
 
 
 # -------------------------
@@ -116,7 +116,9 @@ def remove_opencv(frames_dir, out_dir):
 
         # ✅ Step 1: Create mask
         mask = np.zeros((mh, mw), dtype=np.uint8)
+
         mask[y:y+h, x:x+w] = 255
+        
 
         # ✅ Step 2: Expand mask slightly (VERY IMPORTANT)
         kernel = np.ones((5, 5), np.uint8)
